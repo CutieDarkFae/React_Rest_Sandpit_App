@@ -39,9 +39,7 @@ const getServerSideProps = (async () => {
     var skaters: User[] = [];
     await instance.get('getAll')
         .then(((response) => {
-            console.log(response);
             response.data.forEach((entity) => {
-                console.log(`Formatting ${entity}`)
                 skaters.push(entity as User)
             });
         }))
