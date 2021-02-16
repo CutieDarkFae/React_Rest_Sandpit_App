@@ -60,11 +60,16 @@ const SkaterList = ((props: SkaterListProps) => {
     </>
 });
 
+interface AddPayload {
+    name: string;
+    email: string;
+}
+
 const addSkater = (() => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const onAdd = (async(name: string, email: string) => {
-        await instance.post('/addUser', {name: name, email: email})
+    const onAdd = (async(payload: AddPayload) => {
+        await instance.post('/addUser', {payload})
         .then((response) => {
             console.log(response);
         })
@@ -74,7 +79,7 @@ const addSkater = (() => {
     });
     return <>
         <form onSubmit={() => {
-            onAdd(name, email);
+            onAdd({name: name, email: email} as AddPayload);
         }}>
             <label>
                 Name :
