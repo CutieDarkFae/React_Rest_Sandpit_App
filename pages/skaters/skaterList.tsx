@@ -68,7 +68,9 @@ interface AddPayload {
 const addSkater = (() => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const onAdd = (async(payload: AddPayload) => {
+    const onAdd = (async(e: React.FormEvent, payload: AddPayload) => {
+        e.preventDefault();
+        console.log(`Adding user with payload ${payload}`);
         await instance.post('/addUser', {payload})
         .then((response) => {
             console.log(response);
@@ -78,8 +80,8 @@ const addSkater = (() => {
         })
     });
     return <>
-        <form onSubmit={() => {
-            onAdd({name: name, email: email} as AddPayload);
+        <form onSubmit={(e) => {
+            onAdd(e, {name: name, email: email} as AddPayload);
         }}>
             <label>
                 Name :
