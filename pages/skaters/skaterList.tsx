@@ -71,7 +71,7 @@ const addSkater = (() => {
     const onAdd = (async(e: React.FormEvent, payload: AddPayload) => {
         e.preventDefault();
         console.log(`Adding user with payload ${payload}`);
-        await instance.post('/addUser', {payload})
+        await instance.post('/addUser', payload)
         .then((response) => {
             console.log(response);
         })
