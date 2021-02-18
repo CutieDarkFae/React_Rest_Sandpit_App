@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import CSS from 'csstype';
+import styles from './skaterList.module.css';
 
 interface User {
     id: number;
@@ -24,33 +26,47 @@ const instance = axios.create({
 });
 
 const SkaterList = ((props: SkaterListProps) => {
+    const [addingSkater, setAddingSkater] = useState(false);
+    const [deletingSkaters, setDeletingSkater] = useState(false);
     const [skaters, setSkaters] = useState(props.skaters);
-
-    const onDelete = (async(id: number) => {
-        const payload: DeletePayload = {id: id};
-        console.log(`Calling delete with id ${payload.id}`);
-        await instance.post('/delete', payload)
-        .then(((response) => { // success, refresh the list of skaters
-            setSkaters(skaters.filter((user: User) => {
-                return (user.id !== id);
-            }));
-            console.log(`Deleted ${id}`)
-        }))
-        .catch(((error) => {
-            console.log(error);
-        }));
-    });
-    const generateRows = (() => {
-        var rows = skaters.map((skater:User) => {
-            return <tr key={skater.id}>
-                <td>{skater.name}</td>
-                <td>{skater.email}</td>
-                <td><button onClick={(() => {onDelete(skater.id)})} >Delete</button></td>
-            </tr>;
+    const [selectedSkater, setSelectedSkater] = useState(null as User);
+    
+    const deleteSkater = (() => {
+        const onDelete = (async(e: React.MouseEvent, id: number) => {
+            e.preventDefault();
+            const payload: DeletePayload = {id: id};
+            console.log(`Calling delete with id ${payload.id}`);
+            await instance.post('/deleteUserById', payload)
+            .then(((response) => { // success, refresh the list of skaters
+                setSkaters(skaters.filter((user: User) => {
+                    return (user.id !== id);
+                }));
+                console.log(`Deleted ${id}`)
+            }))
+            .catch(((error) => {
+                console.log(error);
+            }))
+            .finally(() => {
+                setDeletingSkater(false);
+            });
         });
-        return rows;
+
+        return deletingSkaters && <div className={styles.flexContainerSubsequentChild}>
+            <h3>Delete Skater</h3>
+            <p>Are you sure you want to delete {selectedSkater.name}?</p>
+            <div>
+                <button onClick={((e) => {onDelete(e, selectedSkater.id)})}>Delete</button>
+                <button onClick={(() => {setDeletingSkater(false)})}>Cancel</button>
+            </div>
+        </div>
     });
 
+    // const onEdit = (async(e: React.MouseEvent, id: number) => {
+    //     e.preventDefault();
+    //     const idDTO: DeletePayload = {id: id} as DeletePayload;
+    //     const updateDTO: User = {id: null, name: }
+    // });
+  
     const addSkater = (() => {
         const [name, setName] = useState("");
         const [email, setEmail] = useState("");
@@ -67,11 +83,15 @@ const SkaterList = ((props: SkaterListProps) => {
             .catch((error) => {
                 console.log(error);
             })
+            .finally(() => {
+                setAddingSkater(false);
+            })
         });
-        return <>
+        return addingSkater && <div id="add" className={styles.flexContainerSubsequentChild}>
             <form onSubmit={(e) => {
                 onAdd(e, {name: name, email: email} as AddPayload);
             }}>
+                <h3>Add Skater</h3>
                 <label>
                     Name :
                     <input type="text" value={name} onChange={((e) => {setName(e.target.value)})} />
@@ -82,22 +102,48 @@ const SkaterList = ((props: SkaterListProps) => {
                 </label>
                 <input type="submit" value="Submit" />
             </form>
-        </>;
+        </div>;
+    });
+    
+    const generateRows = (() => {
+        var rows = skaters.map((skater:User) => {
+            var key = `editField${skater.id}`;
+            return <tr key={skater.id}>
+                <td>{skater.name}</td>
+                <td>{skater.email}</td>
+                <td>
+                    <div>
+                        <button onClick={((e) => {setSelectedSkater(skater); setDeletingSkater(true)})} >Delete</button>
+                    </div>
+                    <div id={key} />
+                </td>
+            </tr>;
+        });
+        return rows;
     });
 
-    return <><table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-            {generateRows()}
-        </tbody>
-    </table>
-    <div>{addSkater()}</div>
-    </>
+    return <div id="all" className={styles.flexContainer}>
+        <div id="list" className={styles.flexContainerFirstChild}>
+        <h3>All Skaters</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {generateRows()}
+                </tbody>
+            </table>
+            <div>
+                <button onClick={(() => {setAddingSkater(true)})} disabled={addingSkater}>Add</button>
+            </div>
+        </div>
+        {addSkater()}
+        {deleteSkater()}
+
+    </div>
 });
 
 

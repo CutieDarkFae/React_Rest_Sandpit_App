@@ -1,0 +1,17 @@
+.flexContainer {
+    display:flex;
+    background-color: #383e42;
+    flex-wrap: nowrap;
+    color: beige;
+}
+
+.flexContainerSubsequentChild {
+    border-color: beige;
+    border: 1px solid;
+    margin-left: 5px;
+}
+
+.flexContainerFirstChild {
+    border-color: beige;
+    border: 1px solid; 
+}
