@@ -10,7 +10,7 @@ interface UserListProps {
     addingUser: boolean;
 }
 
-const UserList = ((props: UserListProps):JSX.Element implements Card => {
+const UserList = ((props: UserListProps):JSX.Element => {
     const generateRows = (() => {
         var rows = props.users.map((user: User) => {
             var key = `editField${user.id}`;

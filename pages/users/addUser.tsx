@@ -36,7 +36,9 @@ const AddUser = ((props: AddUserProps):JSX.Element => {
             console.log(error);
         })
         .finally(() => {
-            props
+            props.setCards(props.cards.filter((card: JSX.Element) => {
+                return card.
+            }))
         })
     });
     return <div id={`${props.card.name}_${props.card.instance}`} className={styles.flexContainerSubsequentChild}>
