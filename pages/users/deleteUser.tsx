@@ -15,7 +15,7 @@ interface DeleteUserProps {
     selectedUser: User
 }
 
-const DeleteUser = ((props: DeleteUserProps) => {
+const DeleteUser = ((props: DeleteUserProps):JSX.Element => {
     const onDelete = (async (e: React.MouseEvent, id: number) => {
         e.preventDefault();
         const payload: DeletePayload = { id: id };

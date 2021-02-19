@@ -19,11 +19,12 @@ interface userProps {
     users: User[];
 }
 
-const Users = ((props: userProps) => {
+const Users = ((props: userProps):JSX.Element => {
     const [addingUser, setAddingUser] = useState(false);
     const [deletingUser, setDeletingUser] = useState(false);
     const [users, setUsers] = useState(props.users);
     const [selectedUser, setSelectedUser] = useState(null as User);
+    const [cards, setCards] = useState([] as JSX.Element[]);
 
     var addUserProps: AddUserProps = {
         instance: instance,
@@ -47,11 +48,16 @@ const Users = ((props: userProps) => {
         setUsers: setUsers,
         users: users
     };
+    cards.push(UserList(userListProps));
+
+    const generateRows = (() => {
+        return cards.map((card: JSX.Element, i: number) => {
+            return <div id={`card${i}`}>{card}</div>;
+        });
+    });
     return <div id="all" className={styles.flexContainer}>
-        {UserList(userListProps)}
-        {AddUser(addUserProps)}
-        {DeleteUser(deleteUserProps)}
-    </div>
+        {generateRows()}
+    </div>;
 });
 
 const getServerSideProps = (async () => {
@@ -69,7 +75,6 @@ const getServerSideProps = (async () => {
     return { props: {users: users }};
 });
 
-export { instance };
+export { instance, getServerSideProps };
 export type { User };
-export { getServerSideProps };
 export default Users;

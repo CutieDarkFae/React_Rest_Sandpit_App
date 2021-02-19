@@ -16,7 +16,7 @@ interface AddUserProps {
     addingUser: boolean
 }
 
-const AddUser = ((props: AddUserProps) => {
+const AddUser = ((props: AddUserProps):JSX.Element => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const onAdd = (async(e: React.FormEvent, payload: AddPayload) => {
