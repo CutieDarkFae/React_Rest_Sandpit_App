@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
 import React, { useState } from 'react';
 import styles from './userList.module.css';
-import { User } from './users';
+import { Card, User } from './users';
 
 interface AddPayload {
     name: string;
@@ -13,7 +13,10 @@ interface AddUserProps {
     users: User[];
     setUsers: React.Dispatch<React.SetStateAction<User[]>>;
     setAddingUser: React.Dispatch<React.SetStateAction<boolean>>;
-    addingUser: boolean
+    addingUser: boolean;
+    card: Card;
+    cards: JSX.Element[];
+    setCards: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
 }
 
 const AddUser = ((props: AddUserProps):JSX.Element => {
@@ -33,10 +36,10 @@ const AddUser = ((props: AddUserProps):JSX.Element => {
             console.log(error);
         })
         .finally(() => {
-            props.setAddingUser(false);
+            props
         })
     });
-    return props.addingUser && <div id="add" className={styles.flexContainerSubsequentChild}>
+    return <div id={`${props.card.name}_${props.card.instance}`} className={styles.flexContainerSubsequentChild}>
         <form onSubmit={(e) => {
             onAdd(e, {name: name, email: email} as AddPayload);
         }}>

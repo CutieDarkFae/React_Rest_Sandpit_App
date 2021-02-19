@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './userList.module.css';
-import { User } from './users';
+import { User, Card } from './users';
 
 interface UserListProps {
     users: User[];
@@ -10,7 +10,7 @@ interface UserListProps {
     addingUser: boolean;
 }
 
-const UserList = ((props: UserListProps):JSX.Element => {
+const UserList = ((props: UserListProps):JSX.Element implements Card => {
     const generateRows = (() => {
         var rows = props.users.map((user: User) => {
             var key = `editField${user.id}`;

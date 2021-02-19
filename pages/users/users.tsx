@@ -19,6 +19,11 @@ interface userProps {
     users: User[];
 }
 
+interface Card {
+    name: string;
+    instance: number;
+}
+
 const Users = ((props: userProps):JSX.Element => {
     const [addingUser, setAddingUser] = useState(false);
     const [deletingUser, setDeletingUser] = useState(false);
@@ -48,13 +53,32 @@ const Users = ((props: userProps):JSX.Element => {
         setUsers: setUsers,
         users: users
     };
-    cards.push(UserList(userListProps));
+    if (cards.length === 0) { cards.push(UserList(userListProps)); }
 
     const generateRows = (() => {
         return cards.map((card: JSX.Element, i: number) => {
             return <div id={`card${i}`}>{card}</div>;
         });
     });
+
+    const addUser = (() => {
+        var addUserProps: AddUserProps = {
+            instance: instance,
+            addingUser: addingUser,
+            setAddingUser: setAddingUser,
+            users: users,
+            setUsers: setUsers,
+            card: { instance: cards.length + 1, // +1 because we're about to add this to cards
+                name: "Add"
+            } as Card,
+            cards: cards,
+            setCards: setCards
+        };
+        cards.push(AddUser(addUserProps)); // how to close the screen? how to save the user?  These will need to be pushed down
+        // or we allow AddUser to know what it needs to do, and just feed it the data
+        // how to get a card to know it's a card so it can remove itself from the list of cards?  currently cards is just JSX.Element[]  If I change it, will things still render?
+    });
+
     return <div id="all" className={styles.flexContainer}>
         {generateRows()}
     </div>;
@@ -76,5 +100,5 @@ const getServerSideProps = (async () => {
 });
 
 export { instance, getServerSideProps };
-export type { User };
+export type { User, Card };
 export default Users;
